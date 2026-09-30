@@ -1,0 +1,17 @@
+{
+  "name": "vaultdb-password-manager",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A local-first password manager DBMS mini project for college demonstrations.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node --watch server/server.js",
+    "start": "node server/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "sql.js": "^1.13.0"
+  }
+}
