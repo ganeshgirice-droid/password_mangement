@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f6f7f3" />
+  <meta name="description" content="VaultDB is a local-first password manager DBMS mini project demonstrating encrypted credential storage with SQLite." />
+  <title>VaultDB — Password Manager</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div id="gate" class="gate">
+    <div class="gate-card">
+      <div class="brand brand-large"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M10 14v-4a6 6 0 0 1 12 0v4"/><rect x="7" y="13" width="18" height="14" rx="4"/><circle cx="16" cy="19" r="1.5"/><path d="M16 20.5v2"/></svg></span><span>vault<span class="brand-light">db</span></span></div>
+      <p class="eyebrow">LOCAL · PRIVATE · YOURS</p>
+      <h1 id="gate-title">Your vault starts here.</h1>
+      <p id="gate-copy" class="muted">Create a master password to encrypt your vault on this device.</p>
+      <form id="gate-form" class="stack-form">
+        <label for="master-password">Master password</label>
+        <input id="master-password" name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters" />
+        <div id="confirm-wrap" class="hidden-field"><label for="confirm-password">Confirm master password</label><input id="confirm-password" name="confirm" type="password" autocomplete="new-password" minlength="8" placeholder="Enter it again" /></div>
+        <button id="gate-submit" class="button button-primary button-wide" type="submit">Create my vault</button>
+      </form>
+      <p id="gate-error" class="form-error" role="alert"></p>
+      <div class="gate-foot"><span class="status-dot"></span> Encryption happens in your browser. The server never receives your master password.</div>
+    </div>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#vault" aria-label="VaultDB home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M10 14v-4a6 6 0 0 1 12 0v4"/><rect x="7" y="13" width="18" height="14" rx="4"/><circle cx="16" cy="19" r="1.5"/><path d="M16 20.5v2"/></svg></span><span>vault<span class="brand-light">db</span></span></a>
+      <div class="workspace-label">PERSONAL WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-view="vault"><span class="nav-icon">▦</span>My vault<span class="nav-count" id="nav-count">0</span></button>
+        <button class="nav-link" data-view="project"><span class="nav-icon">⌘</span>Project overview</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="local-card"><span class="local-icon">⌂</span><div><strong>Stored locally</strong><small>On this computer only</small></div><span class="status-dot"></span></div>
+        <button id="lock-button" class="nav-link lock-link"><span class="nav-icon">◉</span>Lock vault</button>
+        <div class="sidebar-foot">VAULTDB <span>·</span> COLLEGE DBMS PROJECT</div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="slash">/</span><strong id="breadcrumb-current">My vault</strong></div>
+        <div class="topbar-actions">
+          <span class="encrypted-pill"><span class="mini-lock">⌑</span> End-to-end encrypted</span>
+          <button id="top-lock" class="icon-button" title="Lock vault" aria-label="Lock vault">⏻</button>
+          <div class="avatar" aria-label="Local user">V</div>
+        </div>
+      </header>
+
+      <section id="vault-view" class="view-section">
+        <div class="hero-row">
+          <div><p class="eyebrow">YOUR PRIVATE SPACE</p><h1>Good to see you.</h1><p class="muted">A quieter place for the keys to your digital life.</p></div>
+          <button id="add-first" class="button button-dark" type="button"><span class="plus">＋</span> Add a password</button>
+        </div>
+        <div class="notice"><span class="notice-icon">i</span><span><strong>Student project demo.</strong> This local build is designed for learning, not as a security-audited production password manager. Keep real credentials out of demo databases.</span><button class="notice-close" aria-label="Dismiss notice">×</button></div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">SAVED ITEMS</span><span class="stat-icon icon-mint">▤</span></div><div class="stat-number" id="stat-total">0</div><div class="stat-foot">Encrypted in your local vault</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">STRONG PASSWORDS</span><span class="stat-icon icon-green">↗</span></div><div class="stat-number" id="stat-strong">0<span class="stat-of"> / 0</span></div><div class="stat-foot">Good habits, one login at a time</div></article>
+          <article class="stat-card stat-accent"><div class="stat-top"><span class="stat-label">VAULT STATUS</span><span class="stat-icon icon-dark">⌑</span></div><div class="stat-number status-text"><span class="status-dot"></span>Locked down</div><div class="stat-foot">AES-GCM · PBKDF2-SHA-256</div></article>
+        </div>
+
+        <div class="section-heading"><div><h2>Your passwords</h2><p class="muted">Everything you save, in one private place.</p></div><button id="add-entry" class="button button-primary" type="button"><span class="plus">＋</span> New entry</button></div>
+        <div class="filter-bar"><label class="search-box"><span class="search-icon">⌕</span><input id="search-input" type="search" placeholder="Search websites or usernames…" autocomplete="off" /><kbd>⌘ K</kbd></label><select id="category-filter" aria-label="Filter by category"><option value="all">All categories</option><option>Social</option><option>Work</option><option>Finance</option><option>Shopping</option><option>Entertainment</option><option>Other</option></select><span id="result-count" class="result-count">0 entries</span></div>
+        <div id="entries-list" class="entries-list"></div>
+        <div class="list-footer"><span><span class="status-dot"></span> Your data is encrypted before it reaches SQLite</span><span id="last-updated">Ready to protect your first password</span></div>
+      </section>
+
+      <section id="project-view" class="view-section hidden">
+        <div class="hero-row project-hero"><div><p class="eyebrow">COLLEGE MINI PROJECT · DBMS</p><h1>Behind the vault.</h1><p class="muted">A password manager, built to make database concepts tangible.</p></div><div class="project-badge">DBMS <span>PROJECT</span></div></div>
+        <div class="notice"><span class="notice-icon">i</span><span><strong>Educational demo only.</strong> Not audited, not intended to protect real-world secrets. The service is bound to localhost and stores encrypted data in a local SQLite file.</span></div>
+        <div class="project-grid">
+          <article class="project-card project-wide"><div class="card-kicker">01 / PURPOSE</div><h2>What this project demonstrates</h2><p>VaultDB shows how a small password manager can combine relational persistence, CRUD operations, filtering, and browser-side cryptography. Sensitive fields are encrypted with AES-GCM before any API request is sent.</p><div class="objective-list"><div><span>01</span> Design a clear relational schema</div><div><span>02</span> Perform create, read, update, and delete operations</div><div><span>03</span> Protect stored credential contents with encryption</div><div><span>04</span> Explain data flow and database constraints</div></div></article>
+          <article class="project-card"><div class="card-kicker">02 / STACK</div><h2>Simple by design</h2><div class="stack-list"><div><span class="stack-mark">UI</span><div><strong>HTML · CSS · JavaScript</strong><small>Responsive browser interface</small></div></div><div><span class="stack-mark">API</span><div><strong>Node.js · Express</strong><small>Local JSON API</small></div></div><div><span class="stack-mark">DB</span><div><strong>SQLite · SQL.js</strong><small>Relational file database</small></div></div><div><span class="stack-mark">SEC</span><div><strong>Web Crypto API</strong><small>AES-GCM + PBKDF2</small></div></div></div></article>
+          <article class="project-card project-wide"><div class="card-kicker">03 / DATA MODEL</div><h2>Two tables. One local vault.</h2><p>The database keeps only a password-derived verifier and encrypted credential payloads. Site names, usernames, passwords, URLs, and notes are encrypted together in the browser.</p><div class="er-diagram"><div class="entity-card"><div class="entity-title"><span>▣</span> VAULT_META <small>1 row</small></div><div class="entity-field"><b>PK</b> id</div><div class="entity-field">kdf_salt</div><div class="entity-field">verifier_iv</div><div class="entity-field">verifier_ciphertext</div><div class="entity-field">created_at</div></div><div class="relation"><span>1</span><div class="relation-line"></div><span>N</span><small>contains</small></div><div class="entity-card"><div class="entity-title"><span>▤</span> CREDENTIALS <small>many rows</small></div><div class="entity-field"><b>PK</b> id</div><div class="entity-field">iv</div><div class="entity-field">ciphertext</div><div class="entity-field">created_at</div><div class="entity-field">updated_at</div></div></div><div class="schema-note"><strong>Why ciphertext?</strong> The API and SQLite file never need to know the plaintext password. The encryption key is derived in the browser from the user's master password and is kept in memory only while the vault is unlocked.</div></article>
+          <article class="project-card"><div class="card-kicker">04 / DATA FLOW</div><h2>From form to database</h2><ol class="flow-list"><li><span>1</span><div><strong>Enter details</strong><small>Credential fields stay in the browser.</small></div></li><li><span>2</span><div><strong>Encrypt locally</strong><small>AES-GCM encrypts the record.</small></div></li><li><span>3</span><div><strong>Store ciphertext</strong><small>Express writes IV + ciphertext to SQLite.</small></div></li><li><span>4</span><div><strong>Decrypt on demand</strong><small>Browser key decrypts after unlock.</small></div></li></ol></article>
+          <article class="project-card"><div class="card-kicker">05 / TABLE DESIGN</div><h2>Schema at a glance</h2><div class="schema-table"><div><strong>Table</strong><strong>Purpose</strong></div><div><code>vault_meta</code><span>Salt + encrypted verifier</span></div><div><code>credentials</code><span>Encrypted record rows</span></div><div><code>credentials.id</code><span>Primary key (UUID)</span></div><div><code>updated_at</code><span>Sort / update timestamp</span></div></div></article>
+          <article class="project-card project-wide"><div class="card-kicker">06 / LIMITATIONS</div><h2>Good for a classroom. Not for production.</h2><p>This project is deliberately scoped as a single-user local demonstration. It does not include audited cryptographic implementation, a threat model, multi-user access control, secure backups, or production key recovery. Anyone who can run local code on your computer may be able to interfere with the app. Use dummy credentials only.</p></article>
+        </div>
+      </section>
+      <footer class="main-footer"><span>VaultDB <span class="footer-dot">·</span> DBMS mini project</span><span>Made for learning. Use dummy credentials only.</span></footer>
+    </main>
+  </div>
+  <div id="modal-root"></div>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+</body>
+</html>

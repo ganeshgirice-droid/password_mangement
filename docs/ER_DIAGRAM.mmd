@@ -1,0 +1,16 @@
+erDiagram
+  VAULT_META ||--o{ CREDENTIALS : contains
+  VAULT_META {
+    integer id PK "singleton id = 1"
+    text kdf_salt "PBKDF2 salt"
+    text verifier_iv "AES-GCM nonce"
+    text verifier_ciphertext "encrypted verifier"
+    text created_at
+  }
+  CREDENTIALS {
+    text id PK "UUID"
+    text iv "AES-GCM nonce"
+    text ciphertext "encrypted record JSON"
+    text created_at
+    text updated_at
+  }
